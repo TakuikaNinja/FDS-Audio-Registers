@@ -15,7 +15,7 @@ zip: $(ZIP_NAME).zip
 $(ZIP_NAME).zip: zip.in
 	zip -9 -u $@ -@ < $<
 
-zip.in: $(GAME).fds
+zip.in: $(GAME).fds README.md
 	echo $(GAME).fds > $@
 	echo README.md >> $@
 

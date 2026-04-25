@@ -6,7 +6,7 @@ It builds on top of ongoing research into $4023 interactions: [FDS-4023-Test](ht
 
 Forum thread: https://forums.nesdev.org/viewtopic.php?t=26313
 
-Hardware Recording from a Twin Famicom: TODO
+Hardware Recording from a Twin Famicom: https://youtu.be/25eULocF0Mk
 
 ## Usage
 
