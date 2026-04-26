@@ -9,10 +9,11 @@ FREQUENCY = $0407
 MOD_FREQ = $03ff
 
 InitFDSAudio:
-		lda #%10000011
+		lda #%10000001									; "reset" audio registers
 		sta FDS_IO_ENABLE_MIRROR
 		sta FDS_IO_ENABLE
 		
+		; the following writes should go all through anyway
 		; mute channel (match BIOS init)
 		lda #$80
 		sta FDS_VOL_ENV
@@ -38,6 +39,15 @@ InitWave:
 InitModTable:
 		lda #$80
 		sta FDS_MOD_FREQ_HI								; halt mod table counter
+		
+		lda #$6f
+		sta FDS_MOD_COUNTER								; this mod table counter write should be ignored
+		
+		; it appears that mod table writes don't work as expected otherwise
+		lda #%10000011
+		sta FDS_IO_ENABLE_MIRROR
+		sta FDS_IO_ENABLE
+		
 		ldy #$00
 @mod_loop:
 		lda ModTable,y
@@ -46,8 +56,9 @@ InitModTable:
 		cpy #32
 		bne @mod_loop
 		
-		lda #$00
-		sta FDS_MOD_COUNTER								; set mod table counter
+;		lda #$00
+;		sta FDS_MOD_COUNTER								; set mod table counter
+		
 		rts
 
 UpdateFDSAudio:

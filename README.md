@@ -22,6 +22,7 @@ $4023 = `%10000011` on startup/reset, bits 0 and 7 cannot be changed. (IYKYK)
 
 - B toggles bit 1 of $4023 (sound registers).
 - A plays a sound on the FDS' wavetable channel.
+- Up/Down changes the mod table counter value (observed in $4097).
 
 ## Building
 

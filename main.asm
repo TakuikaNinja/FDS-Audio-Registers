@@ -181,12 +181,13 @@ DoNothing:
 		sta FDS_IO_ENABLE_MIRROR
 		sta FDS_IO_ENABLE
 :
+		jsr ChangeModCounter							; up/down = manipulate mod counter
 		jsr CopyBitfieldSprites
 		; dump $4090-$4097
 		vram_addr_string $2000, 12, 12, FDS_VOL_GAIN, 8
 		
 		inc NeedDraw
-		jmp EnableRendering
+		rts
 
 YPos := 43
 StartingXPos := 96
@@ -221,6 +222,25 @@ CopyBitfieldSprites:
 		inx
 		dey
 		bne @tile										; repeat for all 8 bits
+		rts
+
+ChangeModCounter:
+		lda P1_PRESSED
+		and #(BUTTON_UP | BUTTON_DOWN)
+		cmp #BUTTON_UP
+		bne :+
+		
+		ldx FDS_MOD_COUNTER_VAL
+		dex
+		stx FDS_MOD_COUNTER
+:
+		cmp #BUTTON_DOWN
+		bne :+
+		
+		ldx FDS_MOD_COUNTER_VAL
+		inx
+		stx FDS_MOD_COUNTER
+:
 		rts
 
 .include "fds-audio.asm"
