@@ -13,10 +13,10 @@ InitFDSAudio:
 		sta FDS_IO_ENABLE_MIRROR
 		sta FDS_IO_ENABLE
 		
-		; the following writes should go all through anyway
+		; the following writes should all go through anyway
 		; mute channel (match BIOS init)
 		lda #$80
-		sta FDS_VOL_ENV
+		sta FDS_VOL_ENV									; (likely already forced)
 		lda #$e8
 		sta FDS_ENV_SPEED
 		
@@ -36,12 +36,27 @@ InitWave:
 		lda #$00
 		sta FDS_MASTER_VOL								; set write protect & max master volume
 		
-InitModTable:
-		lda #$80
+		; set pitch
+		lda #<FREQUENCY
+		sta FDS_FREQ_LOW
+		lda #>FREQUENCY
+		sta FDS_FREQ_HI
+		
+		; set modulation frequency
+		lda #<MOD_FREQ
+		sta FDS_MOD_FREQ_LOW
+		lda #($80 | >MOD_FREQ)
 		sta FDS_MOD_FREQ_HI								; halt mod table counter
 		
+InitModTable:
+;		lda #$80
+;		sta FDS_MOD_FREQ_HI								; halt mod table counter
+		
+		lda #($80 | MOD_SPEED)
+		sta FDS_MOD_ENV
+		
 		lda #$6f
-		sta FDS_MOD_COUNTER								; this mod table counter write should be ignored
+		sta FDS_MOD_COUNTER								; this write should eventually become 0?
 		
 		; it appears that mod table writes don't work as expected otherwise
 		lda #%10000011
@@ -69,19 +84,10 @@ UpdateFDSAudio:
 		lda #$00
 		sta AudioQueue
 		
-		; set pitch
-		lda #<FREQUENCY
-		sta FDS_FREQ_LOW
-		lda #>FREQUENCY
-		sta FDS_FREQ_HI
-		
-		; set modulation frequency, then speed
-		lda #<MOD_FREQ
-		sta FDS_MOD_FREQ_LOW
 		lda #>MOD_FREQ
 		sta FDS_MOD_FREQ_HI
-		lda #($80 | MOD_SPEED)
-		sta FDS_MOD_ENV
+;		lda #($80 | MOD_SPEED)
+;		sta FDS_MOD_ENV
 		
 		; set volume gain, then envelope
 		lda #($80 | VOL_GAIN)
